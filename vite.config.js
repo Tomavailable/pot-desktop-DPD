@@ -6,17 +6,36 @@ import { resolve } from 'path';
 export default defineConfig(async () => ({
     plugins: [react()],
 
-    // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
-    // prevent vite from obscuring rust errors
-    clearScreen: false,
-    // tauri expects a fixed port, fail if that port is not available
     server: {
-        port: 1420,
+        host: '0.0.0.0',
+        port: 3000,
         strictPort: true,
+        allowedHosts: true,
     },
-    // to make use of `TAURI_DEBUG` and other env variables
-    // https://tauri.studio/v1/api/config#buildconfig.beforedevcommand
-    envPrefix: ['VITE_', 'TAURI_'],
+    resolve: {
+        alias: {
+            '@tauri-apps/api/window': resolve(__dirname, 'src/mocks/tauri-api.js'),
+            '@tauri-apps/api/tauri': resolve(__dirname, 'src/mocks/tauri-api.js'),
+            '@tauri-apps/api/path': resolve(__dirname, 'src/mocks/tauri-api.js'),
+            '@tauri-apps/api/fs': resolve(__dirname, 'src/mocks/tauri-api.js'),
+            '@tauri-apps/api/event': resolve(__dirname, 'src/mocks/tauri-api.js'),
+            '@tauri-apps/api/http': resolve(__dirname, 'src/mocks/tauri-api.js'),
+            '@tauri-apps/api/os': resolve(__dirname, 'src/mocks/tauri-api.js'),
+            '@tauri-apps/api/app': resolve(__dirname, 'src/mocks/tauri-api.js'),
+            '@tauri-apps/api/updater': resolve(__dirname, 'src/mocks/tauri-api.js'),
+            '@tauri-apps/api/process': resolve(__dirname, 'src/mocks/tauri-api.js'),
+            '@tauri-apps/api/clipboard': resolve(__dirname, 'src/mocks/tauri-api.js'),
+            '@tauri-apps/api/notification': resolve(__dirname, 'src/mocks/tauri-api.js'),
+            '@tauri-apps/api/shell': resolve(__dirname, 'src/mocks/tauri-api.js'),
+            '@tauri-apps/api/globalShortcut': resolve(__dirname, 'src/mocks/tauri-api.js'),
+            '@tauri-apps/api/dialog': resolve(__dirname, 'src/mocks/tauri-api.js'),
+            '@tauri-apps/api': resolve(__dirname, 'src/mocks/tauri-api.js'),
+            'tauri-plugin-store-api': resolve(__dirname, 'src/mocks/tauri-store.js'),
+            'tauri-plugin-fs-watch-api': resolve(__dirname, 'src/mocks/tauri-watch.js'),
+            'tauri-plugin-log-api': resolve(__dirname, 'src/mocks/tauri-log.js'),
+            'tauri-plugin-sql-api': resolve(__dirname, 'src/mocks/tauri-sql.js'),
+        },
+    },
     build: {
         rollupOptions: {
             input: {
@@ -24,11 +43,9 @@ export default defineConfig(async () => ({
                 daemon: resolve(__dirname, 'daemon.html'),
             },
         },
-        // Tauri supports es2021
-        target: process.env.TAURI_PLATFORM == 'windows' ? 'chrome105' : 'safari11',
-        // don't minify for debug builds
-        minify: !process.env.TAURI_DEBUG ? 'esbuild' : false,
-        // produce sourcemaps for debug builds
-        sourcemap: !!process.env.TAURI_DEBUG,
+        target: 'es2022',
+        minify: 'esbuild',
+        sourcemap: false,
     },
 }));
+

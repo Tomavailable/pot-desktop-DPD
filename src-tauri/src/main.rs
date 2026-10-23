@@ -14,6 +14,7 @@ mod system_ocr;
 mod tray;
 mod updater;
 mod window;
+mod dpd;
 
 use backup::*;
 use clipboard::*;
@@ -147,7 +148,10 @@ fn main() {
             local,
             install_plugin,
             font_list,
-            aliyun
+            aliyun,
+             dpd::query_dpd_db,
+             dpd::save_dpd_path,
+             dpd::get_dpd_path
         ])
         .on_system_tray_event(tray_event_handler)
         .build(tauri::generate_context!())
